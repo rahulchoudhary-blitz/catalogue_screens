@@ -1,60 +1,74 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Form, Card } from "antd";
+import { Form, Card, Modal } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-};
-
 const UploadMedia = () => {
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
-  // const [imageUp, setImageUp] = useState([]);
-  const [videoUp, setVideoUp] = useState([]);
-  // const [sizeChartUp, setSizeChartUp] = useState([]);
+  const [imageUpload, setImageUpload] = useState([]);
+  const [videoUpload, setVideoUpload] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const [sizeChartUpload, setSizeChartUpload] = useState([]);
 
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
-  };
+  //image upload
   const beforeUploadImg = (file) => {
-    const validImgCheck =
-      file.type === "image/jpeg" || file.type === "image/png";
-    if (!validImgCheck) {
-      message.error("You can only upload jpeg/png file!");
-    }
-    return validImgCheck;
+    setImageUpload([...imageUpload, file]);
+    return false;
   };
 
+  const removeImage = (file) => {
+    setImageUpload(imageUpload.filter((item) => item.uid !== file.uid));
+  };
+
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
+  };
+
+  /**
+   * validation video upload
+   * @param {*} file
+   * @returns Boolean
+   */
   const beforeUploadVideo = (file) => {
-    const ValidFileType =
+    const validFileType =
       file.type === "video/mov" ||
       file.type === "video/wmv" ||
       file.type === "video/mp4" ||
       file.type === "video/avi" ||
       file.type === "video/flv" ||
       file.type === "video/mkv";
-    if (!ValidFileType) {
+    if (!validFileType) {
       message.error(
         "You can only upload .mp4, .mov, .wmv, .avi, .flv, .mkv file"
       );
     }
-    if (ValidFileType) setVideoUp([...videoUp, file]);
+    if (validFileType) setVideoUpload([...videoUpload, file]);
     return false;
   };
+
+  const removeVideo = (file) => {
+    setVideoUpload(videoUpload.filter((item) => item.uid !== file.uid));
+  };
+
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -67,7 +81,16 @@ const UploadMedia = () => {
       </div>
     </div>
   );
+  const handleCancel = () => setPreviewOpen(false);
 
+  /**
+   * chartImg
+   */
+  const beforeSizeChartUpload = (file) => {
+    setSizeChartUpload([...sizeChartUpload, file]);
+  };
+
+  const handleChange = ({ fileList }) => setFileList(fileList);
   return (
     <>
       <div className="site-card-border-less-wrapper">
@@ -79,10 +102,11 @@ const UploadMedia = () => {
           <Form.Item name="image">
             <Upload
               listType="picture-card"
-              showUploadList={false}
+              maxCount={10}
               accept=".jpg, jpeg, .png"
               beforeUpload={beforeUploadImg}
-              onChange={handleChange}
+              onRemove={removeImage}
+              onPreview={handlePreview}
             >
               + Upload Images
             </Upload>
@@ -91,28 +115,37 @@ const UploadMedia = () => {
           <Form.Item name="video">
             <Upload
               listType="picture-card"
-              showUploadList={false}
-              accept=".mp4, .mov, .wmv, .avi, .flv, .mkv"
               beforeUpload={beforeUploadVideo}
-              onChange={handleChange}
+              maxCount={2}
+              accept=".mp4, .mov, .wmv, .avi, .flv, .mkv"
+              onRemove={removeVideo}
+              onPreview={handlePreview}
             >
-              {videoUp.length >= 2 ? null : "+ Upload Videos"}
+              {videoUpload.length >= 2 ? null : "+ Upload Videos"}
             </Upload>
           </Form.Item>
           <Form.Item name="video">
             <Upload
               name="avatar"
               listType="picture-card"
-              className="avatar-uploader"
-              maxCount={2}
-              showUploadList={false}
+              maxCount={1}
               accept=".jpg, jpeg, .png"
-              beforeUpload={beforeUploadImg}
+              beforeUpload={beforeSizeChartUpload}
               onChange={handleChange}
+              onPreview={handlePreview}
+              onRemove={removeImage}
             >
-              +Upload Size Chart
+              {fileList.length >= 1 ? null : "+ Upload Size Chart"}
             </Upload>
           </Form.Item>
+          <Modal
+            visible={previewOpen}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <img alt="example" style={{ width: "100%" }} src={previewImage} />
+          </Modal>
         </Card>
       </div>
     </>

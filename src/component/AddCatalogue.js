@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import Cards from "../pages/Cards";
 // import Cards from '../pages/Cards'
 import UploadMedia from "../pages/UploadMedia";
@@ -24,23 +24,70 @@ const { TextArea } = Input;
 
 const AddCatalogue = () => {
   const [form] = Form.useForm();
+  const [formLayout, setFormLayout] = useState("horizontal");
+  const [singleSize, setSingleSize] = useState(false);
+
+  const onFormLayoutChange = ({ layout }) => {
+    setFormLayout(layout);
+  };
+
+  const formItemLayout =
+    formLayout === "horizontal"
+      ? {
+          labelCol: {
+            lg: { span: 5 },
+            xs: { span: 4 },
+          },
+        }
+      : null;
+
+  const skuFormStyle = {
+    labelCol: {
+      lg: { span: 11 },
+      xs: { span: 4 },
+    },
+  };
 
   const onFinish = () => {
     //form data handle
   };
-  const formLayout = {
-    labelCol: {
-      lg: { span: 5 },
-      xs: { span: 4 },
-    },
-  };
+
   const handleClear = () => {
     form.resetFields();
   };
+
+  //SingleSize
+  const handleSingleSizeChange = useCallback(() => {
+    setSingleSize(!singleSize);
+
+    form.setFieldsValue({
+      customer_skus: !singleSize
+        ? [
+            {
+              size: "FREE SIZE",
+              weight: "0.4",
+              length: "15",
+              breadth: "10",
+              height: "10",
+              volume: "0.5",
+            },
+          ]
+        : [
+            {
+              weight: "0.4",
+              length: "15",
+              breadth: "10",
+              height: "10",
+              volume: "0.5",
+            },
+          ],
+    });
+  }, [singleSize]);
+
   return (
     <Content>
       <Row
-        md ={{
+        md={{
           span: 24,
         }}
       >
@@ -49,26 +96,30 @@ const AddCatalogue = () => {
         </Col>
         <Col span={24}>
           <Form
-            form = {form}
-            name = "catalogue_form"
-            onFinish = {onFinish}
-            autoComplete = "off"
-            {...formLayout}
+            form={form}
+            name="catalogue_form"
+            onFinish={onFinish}
+            autoComplete="off"
+            // {...formLayout}
+            {...formItemLayout}
+            layout={formLayout}
+            onValuesChange={onFormLayoutChange}
           >
-            <Row gutter = {[12, 12]}>
-              <Col span = {24}>
+            <Row gutter={[12, 12]}>
+              <Col span={24}>
                 <UploadMedia />
               </Col>
             </Row>
 
             <Col span={24}>
               <Card>
-                <Row gutter = {[12, 12]}>
-                  <Col xs = {24} lg = {12}>
+                <Row gutter={[12, 12]}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
-                      label = "Name"
-                      name = "name"
-                      rules ={[
+                      label="Name"
+                      name="name"
+                      {...skuFormStyle}
+                      rules={[
                         {
                           required: true,
                           message: "Please enter product name!",
@@ -78,10 +129,12 @@ const AddCatalogue = () => {
                       <Input type="text" placeholder="Name" />
                     </Form.Item>
                   </Col>
-                  <Col xs = {24} lg = {12}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
-                      label = "Pick-up Point"
-                      name = "pickup-name"
+                      label="Pick-up Point"
+                      name="pickup-name"
+                      {...skuFormStyle}
+                      value={formLayout}
                       rules={[
                         {
                           required: true,
@@ -101,10 +154,14 @@ const AddCatalogue = () => {
                   </Col>
                   {/* */}
                   <Col xs={24} lg={12}>
-                    <Form.Item label = "Product Type" name = "product_type">
+                    <Form.Item
+                      label="Product Type"
+                      name="product_type"
+                      {...skuFormStyle}
+                    >
                       <Select
                         showSearch
-                        filterOption = {(input, option) =>
+                        filterOption={(input, option) =>
                           option.props.children
                             .toLowerCase()
                             .indexOf(input.toLowerCase()) >= 0 ||
@@ -112,7 +169,7 @@ const AddCatalogue = () => {
                             .toLowerCase()
                             .indexOf(input.toLowerCase()) >= 0
                         }
-                        placeholder = "product_type"
+                        placeholder="product_type"
                       >
                         <Select.Option>Chooes Product Type</Select.Option>
                         <Select.Option>Body Art(beauty)</Select.Option>
@@ -123,10 +180,12 @@ const AddCatalogue = () => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs = {24} lg = {12}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label="GST (%)"
                       name="gst"
+                      {...skuFormStyle}
+                      value={formLayout}
                       rules={[
                         {
                           required: true,
@@ -137,11 +196,13 @@ const AddCatalogue = () => {
                       <Select placeholder="Select GST(%)"></Select>
                     </Form.Item>
                   </Col>
-                  {/* ---------------------------------------- */}
+
                   <Col xs={24} lg={12}>
                     <Form.Item
                       label="Return Condition"
                       name="return-condition"
+                      {...skuFormStyle}
+                      value={formLayout}
                       rules={[
                         {
                           required: true,
@@ -165,16 +226,18 @@ const AddCatalogue = () => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs = {24} lg = {12}>
-                    <Form.Item label = "Colour" name = {"colour"}>
-                      <Input type = "text" placeholder = "Color" />
+                  <Col xs={24} lg={12}>
+                    <Form.Item label="Colour" name={"colour"} {...skuFormStyle}>
+                      <Input type="text" placeholder="Color" />
                     </Form.Item>
                   </Col>
-                  <Col xs = {24} lg = {12}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
-                      label = "Product Code"
-                      name = {"product_id"}
-                      rules ={[
+                      label="Product Code"
+                      name={"product_id"}
+                      {...skuFormStyle}
+                      value={formLayout}
+                      rules={[
                         {
                           required: true,
                           message: "Please enter Code",
@@ -184,17 +247,24 @@ const AddCatalogue = () => {
                       <Input type="text" placeholder="Product Code" />
                     </Form.Item>
                   </Col>
-                  {/* ------------------------------------ */}
+
                   <Col xs={24} lg={12}>
-                    <Form.Item label="Amazon ASIN" name={"amazon_asin"}>
+                    <Form.Item
+                      label="Amazon ASIN"
+                      name={"amazon_asin"}
+                      value={formLayout}
+                      {...skuFormStyle}
+                    >
                       <Input type="text" placeholder="Amazon ASIN" />
                     </Form.Item>
                   </Col>
-                  {/* --------------------------------- */}
+
                   <Col xs={24} lg={12}>
                     <Form.Item
                       label="Select Custom Flow"
                       name="customisation_page_short_id"
+                      {...skuFormStyle}
+                      value={formLayout}
                     >
                       <Select defaultValue={null}>
                         <Select.Option value="demo">
@@ -208,9 +278,14 @@ const AddCatalogue = () => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  {/* ------------------------------- */}
+
                   <Col xs={24} lg={12}>
-                    <Form.Item label="HSN Code" name={"hsn_code"}>
+                    <Form.Item
+                      label="HSN Code"
+                      name={"hsn_code"}
+                      value={formLayout}
+                      {...skuFormStyle}
+                    >
                       <InputNumber
                         style={{ width: "100%" }}
                         placeholder="HSN Code"
@@ -218,13 +293,25 @@ const AddCatalogue = () => {
                     </Form.Item>
                   </Col>
                   <Col span={24}>
-                    <Form.Item label="Description" name="description">
+                    <Form.Item
+                      label="Description"
+                      name="description"
+                      value={formLayout}
+                    >
                       <TextArea rows={6} placeholder="Description" />
                     </Form.Item>
                   </Col>
                   <Col xs={24} lg={12}>
-                    <Form.Item label="Single Size" tooltip={"Single Size"}>
-                      <Switch />
+                    <Form.Item
+                      label="Single Size"
+                      tooltip={"Single Size"}
+                      value={formLayout}
+                      {...skuFormStyle}
+                    >
+                      <Switch
+                        checked={singleSize}
+                        onChange={handleSingleSizeChange}
+                      />
                     </Form.Item>
                   </Col>
                   <Col md={{ span: 24 }}>
@@ -238,6 +325,8 @@ const AddCatalogue = () => {
                               field={field}
                               remove={remove}
                               form={form}
+                              singleSize={singleSize}
+                              skuFormStyle={skuFormStyle}
                             />
                           ))}
                           <Row justify="center">
@@ -247,6 +336,7 @@ const AddCatalogue = () => {
                                 onClick={() => add()}
                                 block
                                 icon={<PlusOutlined />}
+                                disabled={singleSize}
                               >
                                 Add More Skus
                               </Button>
@@ -267,6 +357,7 @@ const AddCatalogue = () => {
                               field={field}
                               remove={remove}
                               form={form}
+                              skuFormStyle={skuFormStyle}
                             />
                           ))}
                           <Row justify="center">
@@ -293,13 +384,21 @@ const AddCatalogue = () => {
                 <Row>
                   <Col span={24}>
                     <Collection />
-                    <Pagination defaultCurrent={6} total={500} />
+                    {/* <Pagination defaultCurrent={6} total={500} /> */}
                   </Col>
-
+                  <Col> </Col>
                   <Col span={24}>
                     <Row gutter={[12, 12]} justify="center">
                       <Col xs={24} lg={4}>
-                        <Button type="primary" htmlType="submit" block>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          block
+                          style={{
+                            backgroundColor: "#15A362",
+                            border: "1px solid green",
+                          }}
+                        >
                           Submit
                         </Button>
                       </Col>
@@ -313,10 +412,8 @@ const AddCatalogue = () => {
                 </Row>
               </Card>
             </Col>
-            {/* </Row> */}
           </Form>
         </Col>
-        {/* </Spin> */}
       </Row>
     </Content>
   );

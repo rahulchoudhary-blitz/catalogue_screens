@@ -1,4 +1,4 @@
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import {
   Form,
   Input,
@@ -11,7 +11,14 @@ import {
 } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
 
-export const SkuForm = ({ index, field, remove, form }) => {
+export const SkuForm = ({
+  index,
+  field,
+  remove,
+  form,
+  singleSize,
+  skuFormStyle,
+}) => {
   const [validWeight, setValidWeight] = useState("");
   const [validSellingPrice, setValidSellingPrice] = useState("");
   const [validMrp, setValidMrp] = useState("");
@@ -19,172 +26,177 @@ export const SkuForm = ({ index, field, remove, form }) => {
   const [validBreadth, setValidBreadth] = useState("");
   const [validHeight, setValidHeight] = useState("");
 
-/**
- * Validate Weight
- * @param {*} value 
- * @param {*} callback 
- */
-const validateWeight = (rule, value, callback)=>{
-  if (!value && value !== 0) {
-    setValidWeight('error');
-    callback('Please enter  the weight');
-  } else if (value < 0.05) {
-    setValidWeight('error');
-    callback('weight cannot be less than 0.05');
-  } else if (value > 10) {
-    setValidWeight("error");
-    callback('weight cannot be greater than 10');
-  } else {
-    setValidWeight("succes");
-    callback();
-  }
-};
+  /**
+   * Validate Weight
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateWeight = (rule, value, callback) => {
+    if (!value && value !== 0) {
+      setValidWeight("error");
+      callback("Please enter  the weight");
+    } else if (value < 0.05) {
+      setValidWeight("error");
+      callback("weight cannot be less than 0.05");
+    } else if (value > 10) {
+      setValidWeight("error");
+      callback("weight cannot be greater than 10");
+    } else {
+      setValidWeight("succes");
+      callback();
+    }
+  };
 
+  /**
+   * validate length
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateLength = (rule, value, callback) => {
+    if (!value && value !== 0) {
+      setValidLength("error");
+      callback("Please enter Length");
+    } else if (value < 1) {
+      setValidLength("error");
+      callback("Length cannot be less than 1");
+    } else if (value > 50) {
+      setValidLength("error");
+      callback("Length cannot be greater than 50");
+    } else {
+      setValidLength("succes");
+      callback();
+    }
+  };
 
-/**
- * validate length
- * @param {*} value 
- * @param {*} callback 
- */
-const validateLength = (rule, value, callback)=>{
- if ( !value && value !== 0 ){
-  setValidLength("error");
-  callback("Please enter Length")
- } else if ( value < 1 ){
-  setValidLength("error");
-  callback("Length cannot be less than 1");
- } else if ( value > 50 ) {
-  setValidLength( "error" );
-  callback( "Length cannot be greater than 50" );
- } else {
-  setValidLength("succes");
-  callback();
- }
-}
+  /**
+   * validate selling price
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateSellingPrice = (rule, value, callback) => {
+    const mrp = form.getFieldsValue().customer_skus[index].mrp;
+    if (!value && value !== 0) {
+      setValidSellingPrice("error");
+      callback("Please enter Selling Price");
+    } else if (value < 1) {
+      setValidSellingPrice("error");
+      callback("selling price cannot be less then ₹1");
+    } else if (value > 1000000) {
+      setValidSellingPrice("error");
+      callback("selling price cannot be greater than ₹1000000");
+    } else if (mrp && value > mrp) {
+      setValidSellingPrice("error");
+      callback("selling price cannot be greater than mrp");
+    } else {
+      setValidSellingPrice("succes");
+      callback();
+    }
+  };
 
-/**
- * validate selling price 
- * @param {*} value 
- * @param {*} callback 
- */
-const validateSellingPrice =(rule, value, callback)=>{
- if(!value && value !==0){
-  setValidSellingPrice("error");
-  callback("Please enter Selling Price");
- } else if (value < 1){
-    setValidSellingPrice("error");
-    callback("selling price cannot be less then ₹1");
- } else if (value > 1000000) {
-  setValidSellingPrice("error");
-  callback("selling price cannot be greater than ₹1000000");
-}else {
-  setValidSellingPrice("succes");
-  callback();
-}
-}
+  /**
+   *  validate Mrp
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateMrp = (rule, value, callback) => {
+    const sellingPrice =
+      form.getFieldsValue().customer_skus[index].selling_price;
+    if (!value && value !== 0) {
+      setValidMrp("error");
+      callback("Please enter Mrp");
+    } else if (value < 1) {
+      setValidMrp("error");
+      callback("Mrp cannot be less than ₹1");
+    } else if (value > 1000000) {
+      setValidMrp("error");
+      callback("Mrp cannot be greater than ₹1000000");
+    } else if (sellingPrice && value < sellingPrice) {
+      setValidMrp("error");
+      callback("Mrp cannot be less than selling price");
+    } else {
+      setValidMrp("succes");
+      callback();
+    }
+  };
+  /**
+   * validate Breadth
+   * @param {*} rule
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateBreadth = (rule, value, callback) => {
+    if (!value && value !== 0) {
+      setValidBreadth("error");
+      callback("Please enter Breadth");
+    } else if (value < 1) {
+      setValidBreadth("error");
+      callback("Breadth cannot be less than 1");
+    } else if (value > 50) {
+      setValidBreadth("error");
+      callback("Breadth cannot be greater than 50");
+    } else {
+      setValidBreadth("succes");
+      callback();
+    }
+  };
 
-/**
-*  validate Mrp
- * @param {*} value 
- * @param {*} callback 
- */
-const validateMrp = (rule, value, callback) => {
-  if (!value && value !== 0) {
-    setValidMrp("error");
-    callback("Please enter Mrp");
-  } else if (value < 1) {
-    setValidMrp("error");
-    callback("Mrp cannot be less than ₹1");
-  } else if (value > 1000000) {
-    setValidMrp("error");
-    callback("Mrp cannot be greater than ₹1000000");
-  } else {
-    setValidMrp("succes");
-    callback();
-  }
-};
-/**
- * validate Breadth
- * @param {*} rule 
- * @param {*} value 
- * @param {*} callback 
- */
-const validateBreadth = ( rule, value, callback)=>{
-  if (!value && value !== 0) {
-    setValidBreadth("error");
-    callback("Please enter Breadth");
-  } else if (value < 1) {
-    setValidBreadth("error");
-    callback("Breadth cannot be less than 1");
-  } else if (value > 50) {
-    setValidBreadth("error");
-    callback("Breadth cannot be greater than 50");
-  } else {
-    setValidBreadth("succes");
-    callback();
-  }
-}
-
-/**
- * validate height
- * @param {*} rule 
- * @param {*} value 
- * @param {*} callback 
- */
-const validateHeight = (rule, value, callback) =>{
-  if (!value && value !== 0) {
-    setValidHeight("error");
-    callback("Please enter Height");
-  } else if (value < 1) {
-    setValidHeight("error");
-    callback("Height cannot be less than 1");
-  } else if (value > 50) {
-    setValidHeight("error");
-    callback("Height cannot be greater than 50");
-  } else {
-    setValidHeight("succes");
-    callback();
-  }
-}
-return (
+  /**
+   * validate height
+   * @param {*} rule
+   * @param {*} value
+   * @param {*} callback
+   */
+  const validateHeight = (rule, value, callback) => {
+    if (!value && value !== 0) {
+      setValidHeight("error");
+      callback("Please enter Height");
+    } else if (value < 1) {
+      setValidHeight("error");
+      callback("Height cannot be less than 1");
+    } else if (value > 50) {
+      setValidHeight("error");
+      callback("Height cannot be greater than 50");
+    } else {
+      setValidHeight("succes");
+      callback();
+    }
+  };
+  return (
     <>
       <Row key={field.key} align="baseline" gutter={[8, 8]}>
-      {/* orientation-->The position of title inside divider */}
-        <Divider orientation="left" > {`Sku number:${index + 1}`}</Divider>
+        {/* orientation-->The position of title inside divider */}
+        <Divider orientation="left"> {`Sku number:${index + 1}`}</Divider>
         <Col span={22}>
           <Row gutter={[8, 8]}>
             <Col xs={24} lg={8}>
               <Form.Item
-              {...field}
+                {...field}
+                {...skuFormStyle}
                 label="Size"
-                name={[field.name, 'size']}
+                name={[field.name, "size"]}
                 fieldKey={[field.fieldKey, "size"]}
                 rules={[
                   {
-                  require: true,
-                  message: "Missing size field",
-                },
-              ]}
+                    require: true,
+                    message: "Missing size field",
+                  },
+                ]}
               >
-                <AutoComplete 
-                filterOption={(inputValue, option) =>
-                  option.value
-                    .toUpperCase()
-                    .indexOf(inputValue.toUpperCase()) !== -1
-                }
-                placeholder="Size"
+                <AutoComplete
+                  filterOption={(inputValue, option) =>
+                    option.value
+                      .toUpperCase()
+                      .indexOf(inputValue.toUpperCase()) !== -1
+                  }
+                  disabled={singleSize}
+                  placeholder="Size"
                 />
-                {/* <Select  placeholder="Size">
-                  <Select.Option >Small</Select.Option>
-                  <Select.Option >Medium</Select.Option>
-                  <Select.Option >Large</Select.Option>
-                  <Select.Option >6-15 Month</Select.Option>
-                </Select> */}
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Sku Id"
                 name={[field.name, "sku_id"]}
                 fieldKey={[field.fieldKey, "sku_id"]}
@@ -202,6 +214,7 @@ return (
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Selling Price"
                 name={[field.name, "selling_price"]}
                 fieldKey={[field.fieldKey, "selling_price"]}
@@ -209,8 +222,7 @@ return (
                 rules={[
                   {
                     required: true,
-                    validator : validateSellingPrice,
-                    // message: "missing price",
+                    validator: validateSellingPrice,
                   },
                 ]}
               >
@@ -220,41 +232,44 @@ return (
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="MRP"
-                
                 name={[field.name, "mrp"]}
                 fieldKey={[field.fieldKey, "mrp"]}
-                validateStatus = { validMrp }
+                validateStatus={validMrp}
                 rules={[
                   {
                     required: true,
-                    validator : validateMrp,
-                    // message: "missing price",
+                    validator: validateMrp,
                   },
                 ]}
               >
-                <InputNumber placeholder="Price" />
+                <InputNumber style={{ width: "100%" }} placeholder="Price" />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Cost Price"
                 fieldKey={[field.fieldKey, "cost_price"]}
                 name={[field.name, "cost_price"]}
                 rules={[
                   {
-                    required: true,
                     message: "missing price",
                   },
                 ]}
               >
-                <InputNumber style={{ width: "100%" }} placeholder="Cost Price" />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="Cost Price"
+                />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Qty"
                 fieldKey={[field.fieldKey, "quantity"]}
                 name={[field.name, "quantity"]}
@@ -265,7 +280,11 @@ return (
                   },
                 ]}
               >
-                <InputNumber style={{ width: "100%" }} min={0} placeholder="Quantity" />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  min={0}
+                  placeholder="Quantity"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -273,6 +292,7 @@ return (
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Weight(kg)"
                 fieldKey={[field.fieldKey, "weight"]}
                 name={[field.name, "weight"]}
@@ -281,61 +301,60 @@ return (
                   {
                     required: true,
                     validator: validateWeight,
-                    // message: "missing weight",
                   },
                 ]}
               >
-                <InputNumber style = {{ width: "100%" }} placeholder = "Weight" />
+                <InputNumber style={{ width: "100%" }} placeholder="Weight" />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                label = "L (cm)"
-                fieldKey = {[ field.fieldKey, "length" ]}
-                name = {[ field.name, "length" ]}
-                validateStatus = { validLength }
+                {...skuFormStyle}
+                label="L (cm)"
+                fieldKey={[field.fieldKey, "length"]}
+                name={[field.name, "length"]}
+                validateStatus={validLength}
                 rules={[
                   {
-                    required : true,
-                    validator : validateLength,
-                    // message: "missing length",
+                    required: true,
+                    validator: validateLength,
                   },
                 ]}
               >
-                <InputNumber style = {{ width: "100%" }} placeholder="Length" />
+                <InputNumber style={{ width: "100%" }} placeholder="Length" />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                label = "B (cm)"
-                name = {[ field.name, "breadth" ]}
-                fieldKey = {[ field.fieldKey, "breadth" ]}
-                validateStatus = { validBreadth }
-                rules = {[
+                {...skuFormStyle}
+                label="B (cm)"
+                name={[field.name, "breadth"]}
+                fieldKey={[field.fieldKey, "breadth"]}
+                validateStatus={validBreadth}
+                rules={[
                   {
                     required: true,
-                    validator : validateBreadth,
-                    // message: "missing breadth",
+                    validator: validateBreadth,
                   },
                 ]}
               >
-                <InputNumber style = {{ width: "100%" }} placeholder = "breadth" />
+                <InputNumber style={{ width: "100%" }} placeholder="breadth" />
               </Form.Item>
             </Col>
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="H (cm)"
-                fieldKey = {[ field.fieldKey, "height" ]}
-                name = {[ field.name, "height" ]}
-                validateStatus = { validHeight }
+                fieldKey={[field.fieldKey, "height"]}
+                name={[field.name, "height"]}
+                validateStatus={validHeight}
                 rules={[
                   {
                     required: true,
-                    validator : validateHeight,
-                    // message: "messing height",
+                    validator: validateHeight,
                   },
                 ]}
               >
@@ -345,6 +364,7 @@ return (
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
+                {...skuFormStyle}
                 label="Vol (cm3)"
                 fieldKey={[field.fieldKey, "volume"]}
                 name={[field.name, "volume"]}
@@ -355,25 +375,30 @@ return (
                   },
                 ]}
               >
-                <InputNumber style={{ width: "100%" }} placeholder="volume" />
+                <InputNumber
+                  style={{ width: "100%" }}
+                  placeholder="volume"
+                  disabled={true}
+                />
               </Form.Item>
             </Col>
           </Row>
         </Col>
-        {form.getFieldValue("customer_skus").length > 1 && (<Col span={2}>
-        <Row justify="center">
-          <Col justify="center">
-            {(
-              <MinusCircleOutlined
-                style={{ fontSize: "30px", marginTop: "20px" }}
-                onClick={() => remove(field.name)}
-              />
-            )}
+        {form.getFieldValue("customer_skus").length > 1 && (
+          <Col span={2}>
+            <Row justify="center">
+              <Col justify="center">
+                {
+                  <MinusCircleOutlined
+                    style={{ fontSize: "30px", marginTop: "20px" }}
+                    onClick={() => remove(field.name)}
+                  />
+                }
+              </Col>
+            </Row>
           </Col>
-        </Row>
-        </Col>)}
+        )}
       </Row>
     </>
   );
 };
-

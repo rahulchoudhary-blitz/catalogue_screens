@@ -53,7 +53,18 @@ const CatalogueListData = () => {
               </Col>
             </Row>
           </Col>
-          <Col xs={24} sm={8} lg={6} align="middle" style={{ marginBottom: "0.5em", fontWeight: "600", fontSize : "16px", lineHeight : "1.5"}} >
+          <Col
+            xs={24}
+            sm={8}
+            lg={6}
+            align="middle"
+            style={{
+              marginBottom: "0.5em",
+              fontWeight: "600",
+              fontSize: "16px",
+              lineHeight: "1.5",
+            }}
+          >
             <Row justify="space-evenly">
               <Col>
                 <Title level={5} strong>

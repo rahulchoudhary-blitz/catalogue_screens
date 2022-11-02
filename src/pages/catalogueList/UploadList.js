@@ -1,6 +1,5 @@
-
-import React from 'react'
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons'
+import React from "react";
+import { UploadOutlined, DownloadOutlined } from "@ant-design/icons";
 import {
   Row,
   Col,
@@ -10,24 +9,23 @@ import {
   Upload,
   Typography,
   Divider,
-  message
+  message,
 } from "antd";
-const { Text } = Typography
+const { Text } = Typography;
 const UploadList = () => {
-
   const props = {
-    name: 'file',
+    name: "file",
     action: `${process.env.REACT_APP_BASE_URL}/uploadcsv`,
     headers: {
-      authorization: 'authorization-text',
+      authorization: "authorization-text",
     },
     onChange(info) {
-      if (info.file.status !== 'uploading') {
+      if (info.file.status !== "uploading") {
         console.log(info.file, info.fileList);
       }
-      if (info.file.status === 'done') {
+      if (info.file.status === "done") {
         message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
+      } else if (info.file.status === "error") {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
@@ -40,7 +38,7 @@ const UploadList = () => {
             <Upload {...props}>
               <Button
                 type="primary"
-                style={{backgroundColor:"#15A362"}}
+                style={{ backgroundColor: "#15A362" }}
                 icon={<UploadOutlined />}
                 size="large"
                 block
@@ -53,7 +51,6 @@ const UploadList = () => {
             <Button
               type="success"
               onClick=""
-              
               icon={<DownloadOutlined />}
               size="large"
               block
@@ -85,7 +82,7 @@ const UploadList = () => {
             <Upload {...props} accept=".jpg, jpeg, .png">
               <Button
                 type="primary"
-                style={{backgroundColor:"#15A362"}}
+                style={{ backgroundColor: "#15A362" }}
                 icon={<UploadOutlined />}
                 size="large"
                 block
@@ -106,19 +103,22 @@ const UploadList = () => {
           </Col>
         </Row>
         <Divider> OR </Divider>
-        <Row gutter={[8,8]} justify='center'>
-        <Col>
-              <Upload {...props}>
-                <Button type="primary" style={{backgroundColor:"#15A362"}}> Import From Amazon </Button>
-              </Upload>
-            </Col>
-            <Col>
-            <Button type="secondary" > Import Amazon Sample CSV </Button>
-            </Col>
+        <Row gutter={[8, 8]} justify="center">
+          <Col>
+            <Upload {...props}>
+              <Button type="primary" style={{ backgroundColor: "#15A362" }}>
+                {" "}
+                Import From Amazon{" "}
+              </Button>
+            </Upload>
+          </Col>
+          <Col>
+            <Button type="secondary"> Import Amazon Sample CSV </Button>
+          </Col>
         </Row>
       </Card>
     </Col>
   );
-}
+};
 
-export default UploadList
+export default UploadList;
