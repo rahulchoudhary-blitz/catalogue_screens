@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Card, Button } from "antd";
-import "./pages.module.css";
+// import "./pages.module.css";
 import { CloseOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;

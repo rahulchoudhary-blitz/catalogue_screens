@@ -105,10 +105,10 @@ const CatalogueForm = () => {
               </Form.Item>
             </Col>
             <Row gutter={[12, 12]} justify="center">
-              <Col xs={24} lg={6} style={{ margin: "20px" }}>
+              <Col xs={24} lg={6} style={{ margin: "20px" }} justify="center">
                 <Button
                   type="primary"
-                  style={{ backgroundColor: "#15A362", textAlign: "center" }}
+                  style={{ backgroundColor: "#15A362" }}      
                   icon={<SearchOutlined />}
                   size="large"
                   htmlType="submit"
@@ -116,7 +116,7 @@ const CatalogueForm = () => {
                   Search
                 </Button>
               </Col>
-              <Col xs={24} lg={6} style={{ margin: "20px" }}>
+              <Col xs={24} lg={6} style={{ margin: "20px" }} justify="center">
                 <Button type="secondary" icon={<ClearOutlined />} size="large">
                   Clear Filters
                 </Button>

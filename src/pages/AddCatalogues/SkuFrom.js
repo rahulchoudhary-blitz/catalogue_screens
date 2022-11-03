@@ -17,7 +17,7 @@ export const SkuForm = ({
   remove,
   form,
   singleSize,
-  skuFormStyle,
+  formStyle,
 }) => {
   const [validWeight, setValidWeight] = useState("");
   const [validSellingPrice, setValidSellingPrice] = useState("");
@@ -171,7 +171,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Size"
                 name={[field.name, "size"]}
                 fieldKey={[field.fieldKey, "size"]}
@@ -196,7 +196,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Sku Id"
                 name={[field.name, "sku_id"]}
                 fieldKey={[field.fieldKey, "sku_id"]}
@@ -214,7 +214,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Selling Price"
                 name={[field.name, "selling_price"]}
                 fieldKey={[field.fieldKey, "selling_price"]}
@@ -232,7 +232,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="MRP"
                 name={[field.name, "mrp"]}
                 fieldKey={[field.fieldKey, "mrp"]}
@@ -250,7 +250,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Cost Price"
                 fieldKey={[field.fieldKey, "cost_price"]}
                 name={[field.name, "cost_price"]}
@@ -269,7 +269,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Qty"
                 fieldKey={[field.fieldKey, "quantity"]}
                 name={[field.name, "quantity"]}
@@ -292,7 +292,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Weight(kg)"
                 fieldKey={[field.fieldKey, "weight"]}
                 name={[field.name, "weight"]}
@@ -310,7 +310,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="L (cm)"
                 fieldKey={[field.fieldKey, "length"]}
                 name={[field.name, "length"]}
@@ -328,7 +328,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="B (cm)"
                 name={[field.name, "breadth"]}
                 fieldKey={[field.fieldKey, "breadth"]}
@@ -346,7 +346,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="H (cm)"
                 fieldKey={[field.fieldKey, "height"]}
                 name={[field.name, "height"]}
@@ -364,7 +364,7 @@ export const SkuForm = ({
             <Col xs={24} lg={8}>
               <Form.Item
                 {...field}
-                {...skuFormStyle}
+                {...formStyle}
                 label="Vol (cm3)"
                 fieldKey={[field.fieldKey, "volume"]}
                 name={[field.name, "volume"]}

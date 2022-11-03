@@ -38,7 +38,7 @@ const columns = [
   },
 ];
 
-const Collection = () => {
+const CollectionList = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -83,4 +83,4 @@ const Collection = () => {
   };
   return <Table rowSelection={rowSelection} columns={columns} />;
 };
-export default Collection;
+export default CollectionList;

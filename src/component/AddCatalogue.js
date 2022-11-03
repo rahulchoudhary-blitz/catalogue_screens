@@ -1,10 +1,8 @@
 import React, { useState, useCallback } from "react";
-import Cards from "../pages/Cards";
-// import Cards from '../pages/Cards'
-import UploadMedia from "../pages/UploadMedia";
+import PageOverviewCard from "../pages/AddCatalogues/PageOverviewCard";
+import UploadMedia from "../pages/AddCatalogues/UploadMedia";
 import { PlusOutlined } from "@ant-design/icons";
 import Content from "../layout/NavBar";
-import "./addcatalog.css";
 import {
   Row,
   Col,
@@ -17,11 +15,11 @@ import {
   Switch,
   Pagination,
 } from "antd";
-import Collection from "../pages/Collection";
-import { SkuForm } from "../pages/SkuFrom";
-import { AttributeForm } from "../pages/AttributeForm";
-const { TextArea } = Input;
+import CollectionList from "../pages/AddCatalogues/CollectionList";
+import { SkuForm } from "../pages/AddCatalogues/SkuFrom";
+import { AttributeForm } from "../pages/AddCatalogues/AttributeForm";
 
+const { TextArea } = Input;
 const AddCatalogue = () => {
   const [form] = Form.useForm();
   const [formLayout, setFormLayout] = useState("horizontal");
@@ -41,7 +39,7 @@ const AddCatalogue = () => {
         }
       : null;
 
-  const skuFormStyle = {
+  const formStyle = {
     labelCol: {
       lg: { span: 11 },
       xs: { span: 4 },
@@ -92,7 +90,7 @@ const AddCatalogue = () => {
         }}
       >
         <Col span={24}>
-          <Cards />
+          <PageOverviewCard />
         </Col>
         <Col span={24}>
           <Form
@@ -100,17 +98,17 @@ const AddCatalogue = () => {
             name="catalogue_form"
             onFinish={onFinish}
             autoComplete="off"
-            // {...formLayout}
             {...formItemLayout}
             layout={formLayout}
             onValuesChange={onFormLayoutChange}
           >
+            {/* image and video and img chartImg comp  */}
             <Row gutter={[12, 12]}>
               <Col span={24}>
                 <UploadMedia />
               </Col>
             </Row>
-
+           {/* Product details form  */}
             <Col span={24}>
               <Card>
                 <Row gutter={[12, 12]}>
@@ -118,7 +116,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Name"
                       name="name"
-                      {...skuFormStyle}
+                      {...formStyle}
                       rules={[
                         {
                           required: true,
@@ -133,7 +131,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Pick-up Point"
                       name="pickup-name"
-                      {...skuFormStyle}
+                      {...formStyle}
                       value={formLayout}
                       rules={[
                         {
@@ -157,7 +155,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Product Type"
                       name="product_type"
-                      {...skuFormStyle}
+                      {...formStyle}
                     >
                       <Select
                         showSearch
@@ -184,7 +182,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="GST (%)"
                       name="gst"
-                      {...skuFormStyle}
+                      {...formStyle}
                       value={formLayout}
                       rules={[
                         {
@@ -201,7 +199,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Return Condition"
                       name="return-condition"
-                      {...skuFormStyle}
+                      {...formStyle}
                       value={formLayout}
                       rules={[
                         {
@@ -227,7 +225,7 @@ const AddCatalogue = () => {
                     </Form.Item>
                   </Col>
                   <Col xs={24} lg={12}>
-                    <Form.Item label="Colour" name={"colour"} {...skuFormStyle}>
+                    <Form.Item label="Colour" name={"colour"} {...formStyle}>
                       <Input type="text" placeholder="Color" />
                     </Form.Item>
                   </Col>
@@ -235,7 +233,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Product Code"
                       name={"product_id"}
-                      {...skuFormStyle}
+                      {...formStyle}
                       value={formLayout}
                       rules={[
                         {
@@ -253,7 +251,7 @@ const AddCatalogue = () => {
                       label="Amazon ASIN"
                       name={"amazon_asin"}
                       value={formLayout}
-                      {...skuFormStyle}
+                      {...formStyle}
                     >
                       <Input type="text" placeholder="Amazon ASIN" />
                     </Form.Item>
@@ -263,7 +261,7 @@ const AddCatalogue = () => {
                     <Form.Item
                       label="Select Custom Flow"
                       name="customisation_page_short_id"
-                      {...skuFormStyle}
+                      {...formStyle}
                       value={formLayout}
                     >
                       <Select defaultValue={null}>
@@ -284,7 +282,7 @@ const AddCatalogue = () => {
                       label="HSN Code"
                       name={"hsn_code"}
                       value={formLayout}
-                      {...skuFormStyle}
+                      {...formStyle}
                     >
                       <InputNumber
                         style={{ width: "100%" }}
@@ -306,7 +304,7 @@ const AddCatalogue = () => {
                       label="Single Size"
                       tooltip={"Single Size"}
                       value={formLayout}
-                      {...skuFormStyle}
+                      {...formStyle}
                     >
                       <Switch
                         checked={singleSize}
@@ -326,7 +324,7 @@ const AddCatalogue = () => {
                               remove={remove}
                               form={form}
                               singleSize={singleSize}
-                              skuFormStyle={skuFormStyle}
+                              formStyle={formStyle}
                             />
                           ))}
                           <Row justify="center">
@@ -357,7 +355,7 @@ const AddCatalogue = () => {
                               field={field}
                               remove={remove}
                               form={form}
-                              skuFormStyle={skuFormStyle}
+                              formStyle={formStyle}
                             />
                           ))}
                           <Row justify="center">
@@ -383,7 +381,7 @@ const AddCatalogue = () => {
               <Card title="Select Collections">
                 <Row>
                   <Col span={24}>
-                    <Collection />
+                    <CollectionList />
                     {/* <Pagination defaultCurrent={6} total={500} /> */}
                   </Col>
                   <Col> </Col>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Row, Col, Typography, Divider } from "antd";
 import Content from "../layout/NavBar";
-import Cards from "../pages/Cards";
+import PageOverviewCard from "../pages/AddCatalogues/PageOverviewCard";
 import CatalogueForm from "../pages/catalogueList/CatalogueForm";
 import UploadList from "../pages/catalogueList/UploadList";
 import CatalogueListData from "../pages/catalogueList/CatalogueListData";
@@ -13,7 +13,7 @@ const CatalogueList = () => {
       <Content>
         <Row>
           <Col span={24}>
-            <Cards />
+            <PageOverviewCard />
           </Col>
           <Col span={24}>
             <CatalogueForm />

@@ -2,7 +2,7 @@ import React from "react";
 import { Form, Input, Row, Col, AutoComplete, Divider } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
 
-export const AttributeForm = ({ index, field, remove, form, skuFormStyle }) => {
+export const AttributeForm = ({ index, field, remove, form, formStyle }) => {
   return (
     <>
       <Row key={field.key} align="baseline" gutter={[8, 8]}>
@@ -15,7 +15,7 @@ export const AttributeForm = ({ index, field, remove, form, skuFormStyle }) => {
                 label="Attribute key"
                 name={[field.name, "attribute_lable"]}
                 fieldKey={[field.fieldKey, "attribute_label"]}
-                {...skuFormStyle}
+                {...formStyle}
                 rules={[
                   {
                     required: true,
@@ -39,7 +39,7 @@ export const AttributeForm = ({ index, field, remove, form, skuFormStyle }) => {
                 label="Attribute Value"
                 name={[field.name, "attribute_value"]}
                 fieldkey={[field.fieldKey, "attribute_value"]}
-                {...skuFormStyle}
+                {...formStyle}
                 rules={[
                   {
                     required: true,
