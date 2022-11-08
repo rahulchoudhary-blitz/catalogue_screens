@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Form, Card, Modal } from "antd";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+
 import { message, Upload } from "antd";
 
 const UploadMedia = () => {
-  const [loading, setLoading] = useState(false);
   const [imageUpload, setImageUpload] = useState([]);
   const [videoUpload, setVideoUpload] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -69,18 +68,6 @@ const UploadMedia = () => {
     setVideoUpload(videoUpload.filter((item) => item.uid !== file.uid));
   };
 
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload image
-      </div>
-    </div>
-  );
   const handleCancel = () => setPreviewOpen(false);
 
   /**
@@ -88,6 +75,7 @@ const UploadMedia = () => {
    */
   const beforeSizeChartUpload = (file) => {
     setSizeChartUpload([...sizeChartUpload, file]);
+    return false;
   };
 
   const handleChange = ({ fileList }) => setFileList(fileList);
@@ -124,16 +112,16 @@ const UploadMedia = () => {
               {videoUpload.length >= 2 ? null : "+ Upload Videos"}
             </Upload>
           </Form.Item>
-          <Form.Item name="video">
+          <Form.Item name="image">
             <Upload
               name="avatar"
               listType="picture-card"
               maxCount={1}
               accept=".jpg, jpeg, .png"
               beforeUpload={beforeSizeChartUpload}
-              onChange={handleChange}
               onPreview={handlePreview}
               onRemove={removeImage}
+              onChange={handleChange}
             >
               {fileList.length >= 1 ? null : "+ Upload Size Chart"}
             </Upload>

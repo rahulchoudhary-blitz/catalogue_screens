@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+//api
+http://localhost:8080/api/inventory/seller/catalogue
+?name=utugjgkh&seller_sku_id=utugjgkh
+&pickup_point=6246dffa0ad4e6c99c5604b0
+&is_oos=false&product_types[]=electronics__wearables__smart_watches&sort_by=price_high_to_low
+&page_no=0&page_size=20

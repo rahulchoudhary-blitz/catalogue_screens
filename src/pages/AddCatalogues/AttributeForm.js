@@ -2,7 +2,14 @@ import React from "react";
 import { Form, Input, Row, Col, AutoComplete, Divider } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
 
-export const AttributeForm = ({ index, field, remove, form, formStyle }) => {
+export const AttributeForm = ({
+  index,
+  field,
+  remove,
+  form,
+  formStyle,
+  attributeList,
+}) => {
   return (
     <>
       <Row key={field.key} align="baseline" gutter={[8, 8]}>
@@ -24,6 +31,7 @@ export const AttributeForm = ({ index, field, remove, form, formStyle }) => {
                 ]}
               >
                 <AutoComplete
+                  options={attributeList}
                   filterOption={(inputValue, option) =>
                     option.value
                       .toUpperCase()
@@ -76,5 +84,3 @@ export const AttributeForm = ({ index, field, remove, form, formStyle }) => {
     </>
   );
 };
-
-

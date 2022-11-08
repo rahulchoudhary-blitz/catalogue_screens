@@ -10,6 +10,7 @@ import {
   Select,
 } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
+import { fetchAddPreferred } from "../../ApiStore/ApiData";
 
 export const SkuForm = ({
   index,
@@ -18,6 +19,7 @@ export const SkuForm = ({
   form,
   singleSize,
   formStyle,
+  skuSizes,
 }) => {
   const [validWeight, setValidWeight] = useState("");
   const [validSellingPrice, setValidSellingPrice] = useState("");
@@ -25,6 +27,9 @@ export const SkuForm = ({
   const [validLength, setValidLength] = useState("");
   const [validBreadth, setValidBreadth] = useState("");
   const [validHeight, setValidHeight] = useState("");
+
+  //Api
+  const [skuSize, setSkuSize] = useState([]);
 
   /**
    * Validate Weight
@@ -161,6 +166,13 @@ export const SkuForm = ({
       callback();
     }
   };
+
+  //Api intigration
+  const fetchSkuSizeData = async () => {
+    const skuResponse = await fetchAddPreferred();
+    setSkuSize(skuResponse.data.data.sku_sizes);
+  };
+
   return (
     <>
       <Row key={field.key} align="baseline" gutter={[8, 8]}>
@@ -190,6 +202,7 @@ export const SkuForm = ({
                   }
                   disabled={singleSize}
                   placeholder="Size"
+                  options={skuSizes}
                 />
               </Form.Item>
             </Col>

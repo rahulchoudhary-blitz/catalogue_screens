@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import PageOverviewCard from "../pages/AddCatalogues/PageOverviewCard";
 import UploadMedia from "../pages/AddCatalogues/UploadMedia";
 import { PlusOutlined } from "@ant-design/icons";
@@ -15,15 +15,70 @@ import {
   Switch,
   Pagination,
 } from "antd";
+
 import CollectionList from "../pages/AddCatalogues/CollectionList";
 import { SkuForm } from "../pages/AddCatalogues/SkuFrom";
 import { AttributeForm } from "../pages/AddCatalogues/AttributeForm";
+import { fetchAddPreferred, fetchPickupAddress } from "../ApiStore/ApiData";
 
 const { TextArea } = Input;
+
 const AddCatalogue = () => {
   const [form] = Form.useForm();
   const [formLayout, setFormLayout] = useState("horizontal");
   const [singleSize, setSingleSize] = useState(false);
+  const [validateName, setValidateName] = useState("");
+  const [productList, setproductList] = useState([]);
+  const [skuSizeList, setSkuSizeList] = useState([]);
+  const [gstValue, setGstValue] = useState([]);
+  const [returnCondition, setReturnCondition] = useState([]);
+
+  const [initialVal, setInitialVal] = useState({
+    pickup_point: "",
+    product_code: "",
+    gst: "",
+    return_condition: "",
+    customer_skus: [],
+    product_attributes: [],
+    product_type: "",
+  });
+
+  //  * fetch All preferred data
+  const fetchPreferredData = async () => {
+    const response = await fetchAddPreferred();
+    setproductList([
+      ...response.data.data.product_types.map((item) => ({
+        value: item.key,
+        label: item.display_value,
+      })),
+    ]);
+    //skuSizeList
+    setSkuSizeList(
+      response.data.data.sku_sizes.map((item) => ({ value: item }))
+    );
+    //set Gst
+    setGstValue(response.data.data.gst_options);
+    //set Return Condition
+    setReturnCondition(
+      response.data.data.return_conditions.map((item) => ({
+        value: item.key,
+        label: item.label,
+      }))
+    );
+    //intialValue
+    let formInitialValue = initialVal;
+    if (response.selected_product_type) {
+      formInitialValue = {
+        ...formInitialValue,
+        product_type: response.selected_product_type,
+      };
+    }
+    setInitialVal(formInitialValue);
+  };
+
+  useEffect(() => {
+    fetchPreferredData();
+  }, []);
 
   const onFormLayoutChange = ({ layout }) => {
     setFormLayout(layout);
@@ -82,6 +137,35 @@ const AddCatalogue = () => {
     });
   }, [singleSize]);
 
+  //validateProductName
+  const validateProductName = (rule, value, callback) => {
+    const specialChars = `\`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`;
+    const spaicalChar = specialChars.split("").some((specialChars) => {
+      if (value.includes(specialChars)) {
+        setValidateName("error");
+        callback("Product name not includes any spaical char");
+      }
+    });
+    if (!value && value !== 0) {
+      setValidateName("error");
+      callback("Please enter valid Name");
+    } else if (value.includes(specialChars)) {
+      setValidateName("error");
+      callback("Product name not includes any spaical char");
+    } else {
+      setValidateName("succes");
+      callback();
+    }
+  };
+  //Select Value handleChange
+  const handleChangeOnSelect = (value) => {
+    console.log(`selected ${value}`);
+  };
+
+  const onSearch = (value) => {
+    console.log("search:", value);
+  };
+
   return (
     <Content>
       <Row
@@ -108,26 +192,27 @@ const AddCatalogue = () => {
                 <UploadMedia />
               </Col>
             </Row>
-           {/* Product details form  */}
+            {/* Product details form  */}
             <Col span={24}>
               <Card>
                 <Row gutter={[12, 12]}>
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Name"
                       name="name"
                       {...formStyle}
+                      validateStatus={validateName}
                       rules={[
                         {
                           required: true,
-                          message: "Please enter product name!",
+                          validator: validateProductName,
                         },
                       ]}
                     >
                       <Input type="text" placeholder="Name" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Pick-up Point"
                       name="pickup-name"
@@ -140,45 +225,48 @@ const AddCatalogue = () => {
                         },
                       ]}
                     >
-                      <Select>
-                        <Select.Option>
-                          pickup/address-045/xhahsdasassnasj
-                        </Select.Option>
-                        <Select.Option>
-                          pickup/address-067/xhahsdasassnasj
-                        </Select.Option>
-                      </Select>
+                      <Select
+                        defaultValue="pickup/address-045/xhahsdasassnasj"
+                        onChange={handleChangeOnSelect}
+                        options={[
+                          {
+                            value: "pickup/address-045/xhahsdasassnasj",
+                            label: "pickup/address-045/xhahsdasassnasj",
+                          },
+                          {
+                            value: "pickup/address-067/xhahsdasassnasj",
+                            label: "pickup/address-067/xhahsdasassnasj",
+                          },
+                        ]}
+                      />
                     </Form.Item>
                   </Col>
                   {/* */}
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Product Type"
                       name="product_type"
                       {...formStyle}
                     >
                       <Select
+                        onChange={handleChangeOnSelect}
                         showSearch
-                        filterOption={(input, option) =>
+                        optionFilterProp="children"
+                        style={{ width: "100%" }}
+                        placeholder="Product Type"
+                        filterOption={(inputValue, option) =>
                           option.props.children
                             .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0 ||
-                          option.props.value
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
+                            .indexOf(inputValue.toLowerCase()) >= 0
                         }
-                        placeholder="product_type"
                       >
-                        <Select.Option>Chooes Product Type</Select.Option>
-                        <Select.Option>Body Art(beauty)</Select.Option>
-                        <Select.Option>Eyes(beauty)</Select.Option>
-                        <Select.Option>Face(beauty)</Select.Option>
-                        <Select.Option>Lips(beauty)</Select.Option>
-                        <Select.Option>Nails(beauty)</Select.Option>
+                        {productList.map((item) => (
+                          <Option value={item.key}>{item.label}</Option>
+                        ))}
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="GST (%)"
                       name="gst"
@@ -191,11 +279,15 @@ const AddCatalogue = () => {
                         },
                       ]}
                     >
-                      <Select placeholder="Select GST(%)"></Select>
+                      <Select placeholder="Select GST(%)">
+                        {gstValue.map((item) => (
+                          <Option value={item}>{item}</Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Return Condition"
                       name="return-condition"
@@ -208,28 +300,22 @@ const AddCatalogue = () => {
                         },
                       ]}
                     >
-                      <Select>
-                        <Select.Option>Easy 5 days return</Select.Option>
-                        <Select.Option>
-                          This Product cannot be returned
-                        </Select.Option>
-                        <Select.Option>Easy 3 days return</Select.Option>
-                        <Select.Option>
-                          Exchange Only Within 5 days
-                        </Select.Option>
-                        <Select.Option>
-                          Exchange Only Within 3 days
-                        </Select.Option>
-                        <Select.Option>Easy Returns</Select.Option>
+                      <Select
+                        onChange={handleChangeOnSelect}
+                        placeholder="Easy 5 days return"
+                      >
+                        {returnCondition.map((item) => (
+                          <Option key={item.value}>{item.label}</Option>
+                        ))}
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item label="Colour" name={"colour"} {...formStyle}>
                       <Input type="text" placeholder="Color" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={12}>
+                  <Col xs={12} lg={8}>
                     <Form.Item
                       label="Product Code"
                       name={"product_id"}
@@ -242,11 +328,15 @@ const AddCatalogue = () => {
                         },
                       ]}
                     >
-                      <Input type="text" placeholder="Product Code" />
+                      <Input
+                        type="text"
+                        placeholder="Product Code"
+                        style={{ width: "100%" }}
+                      />
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Amazon ASIN"
                       name={"amazon_asin"}
@@ -257,27 +347,39 @@ const AddCatalogue = () => {
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="Select Custom Flow"
                       name="customisation_page_short_id"
                       {...formStyle}
                       value={formLayout}
                     >
-                      <Select defaultValue={null}>
-                        <Select.Option value="demo">
-                          No custom flow
-                        </Select.Option>
-                        <Select.Option value="demo">test</Select.Option>
-                        <Select.Option value="demo">
-                          test custom flow
-                        </Select.Option>
-                        <Select.Option value="demo">test custom</Select.Option>
-                      </Select>
+                      <Select
+                        defaultValue="1"
+                        onChange={handleChangeOnSelect}
+                        options={[
+                          {
+                            value: "1",
+                            label: "No custom flow",
+                          },
+                          {
+                            value: "2",
+                            label: "test",
+                          },
+                          {
+                            value: "3",
+                            label: " test custom flow",
+                          },
+                          {
+                            value: "4",
+                            label: "test custom",
+                          },
+                        ]}
+                      />
                     </Form.Item>
                   </Col>
 
-                  <Col xs={24} lg={12}>
+                  <Col xs={24} lg={8}>
                     <Form.Item
                       label="HSN Code"
                       name={"hsn_code"}
@@ -325,6 +427,7 @@ const AddCatalogue = () => {
                               form={form}
                               singleSize={singleSize}
                               formStyle={formStyle}
+                              skuSizes={skuSizeList}
                             />
                           ))}
                           <Row justify="center">
@@ -335,6 +438,7 @@ const AddCatalogue = () => {
                                 block
                                 icon={<PlusOutlined />}
                                 disabled={singleSize}
+                                style={{ width: "100%" }}
                               >
                                 Add More Skus
                               </Button>
@@ -382,7 +486,6 @@ const AddCatalogue = () => {
                 <Row>
                   <Col span={24}>
                     <CollectionList />
-                    {/* <Pagination defaultCurrent={6} total={500} /> */}
                   </Col>
                   <Col> </Col>
                   <Col span={24}>

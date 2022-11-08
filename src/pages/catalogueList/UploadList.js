@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { UploadOutlined, DownloadOutlined } from "@ant-design/icons";
 import {
   Row,
@@ -12,30 +12,21 @@ import {
   message,
 } from "antd";
 const { Text } = Typography;
+
+import { bulkUploadApi } from "../../ApiStore/ApiData";
+
 const UploadList = () => {
-  const props = {
-    name: "file",
-    action: `${process.env.REACT_APP_BASE_URL}/uploadcsv`,
-    headers: {
-      authorization: "authorization-text",
-    },
-    onChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+  const beforeUploadCsvFile = async (file) => {
+    await bulkUploadApi(file);
+    notification.success({ message: "Catalogues uploaded successfully" });
   };
+
   return (
     <Col span={24}>
       <Card>
         <Row gutter={[24, 18]}>
           <Col xs={24} lg={4}>
-            <Upload {...props}>
+            <Upload beforeUpload={beforeUploadCsvFile}>
               <Button
                 type="primary"
                 style={{ backgroundColor: "#15A362" }}
@@ -79,7 +70,7 @@ const UploadList = () => {
             </Button>
           </Col>
           <Col xs={24} lg={6}>
-            <Upload {...props} accept=".jpg, jpeg, .png">
+            <Upload accept=".jpg, jpeg, .png">
               <Button
                 type="primary"
                 style={{ backgroundColor: "#15A362" }}
@@ -105,7 +96,7 @@ const UploadList = () => {
         <Divider> OR </Divider>
         <Row gutter={[8, 8]} justify="center">
           <Col>
-            <Upload {...props}>
+            <Upload>
               <Button type="primary" style={{ backgroundColor: "#15A362" }}>
                 {" "}
                 Import From Amazon{" "}
