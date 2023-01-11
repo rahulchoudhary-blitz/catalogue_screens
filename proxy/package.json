@@ -1,0 +1,17 @@
+{
+  "name": "kuber-proxy",
+  "version": "1.0.0",
+  "description": "Use this proxy to connect directly to stage APIs from kuber",
+  "main": "app.js",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "fetch": "^1.1.0",
+    "http": "0.0.1-security"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rahul Ranjan",
+  "license": "ISC"
+}
